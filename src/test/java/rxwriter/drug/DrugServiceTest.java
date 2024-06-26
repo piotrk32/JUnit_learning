@@ -36,4 +36,20 @@ class DrugServiceTest {
         System.out.println(thrown.getMessage());
     }
 
+    @Test
+    @DisplayName("return dispensable drugs with all properties set correctly from database")
+    void setsDrugPropertiesCorrectly() {
+        List<DispensableDrug> foundDrugs = drugService.findDrugsStartingWith("aspirin");
+        DrugClassification[] expectedClassifications = new DrugClassification[] {
+                DrugClassification.ANALGESIC, DrugClassification.PLATELET_AGGREGATION_INHIBITORS
+        };
+        DispensableDrug drug = foundDrugs.get(0);
+        assertAll("DispensableDrug properties",
+                () -> assertEquals("aspirin", drug.drugName()),
+                () -> assertFalse(drug.isControlled()),
+                () -> assertEquals(2, drug.drugClassifications().length),
+                () -> assertArrayEquals(expectedClassifications, drug.drugClassifications())
+        );
+    }
+
 }
