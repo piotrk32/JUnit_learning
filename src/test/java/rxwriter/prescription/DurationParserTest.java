@@ -8,12 +8,13 @@ class DurationParserTest {
 
     @Test
     public void parseDurationWithValidUnitAndQuantity(){
-        soSomething();
+        assertSame(14, DurationParser.parseDays("2 weeks"));
+        assertSame(30, DurationParser.parseDays("1 month"));
 
     }
-
-    private void soSomething(){
-        System.out.println("hi");
+    @Test
+    public void returnsNullForUnmatchedUnit(){
+        assertNull(DurationUnit.getByTextValue("boop"));
     }
 
 }
