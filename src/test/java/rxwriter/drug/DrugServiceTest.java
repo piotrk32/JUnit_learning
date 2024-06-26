@@ -1,6 +1,7 @@
 package rxwriter.drug;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,6 +26,14 @@ class DrugServiceTest {
         assertEquals("asmanex", foundDrugs.get(0).drugName());
         assertEquals("aspirin", foundDrugs.get(1).drugName());
 
+    }
+
+    @Test
+    @DisplayName("when passed a empty string for startingWith")
+    void throwsExceptionOnEmptyStartsWith() {
+        Exception thrown = assertThrows(IllegalArgumentException.class,
+                () -> drugService.findDrugsStartingWith(""));
+        System.out.println(thrown.getMessage());
     }
 
 }
