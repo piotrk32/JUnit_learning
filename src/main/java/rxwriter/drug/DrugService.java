@@ -28,7 +28,7 @@ public class DrugService {
         return dispensableDrugs;
     }
 
-    private DispensableDrug convertRecord(DrugRecord record) {
+    private DispensableDrug     convertRecord(DrugRecord record) {
         List<DrugClassification> classifications = new ArrayList<>();
         for (int code : record.classCodes()) {
             classifications.add(DrugClassification.getClassificationByCode(code));
