@@ -3,24 +3,28 @@ package rxwriter.drug;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import rxwriter.drug.database.DrugRecord;
+import rxwriter.drug.database.DrugSource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DrugServiceTest {
+class DrugServiceTest implements DrugSource {
 
-    private DrugService drugService;
-
-    @BeforeEach
-    void setup() {
-        drugService = new DrugService();
-    }
+//    private DrugService drugService;
+//
+//    @BeforeEach
+//    void setup() {
+//        drugService = new DrugService();
+//    }
 
     @Test
     void drugsAreReturnedSorted(){
 
-        List<DispensableDrug> foundDrugs = drugService.findDrugsStartingWith("as");
+        DrugService service = new DrugService(this);
+        List<DispensableDrug> foundDrugs = service.findDrugsStartingWith("as");
         assertNotNull(foundDrugs);
         assertEquals(2, foundDrugs.size());
         assertEquals("asmanex", foundDrugs.get(0).drugName());
@@ -31,15 +35,17 @@ class DrugServiceTest {
     @Test
     @DisplayName("when passed a empty string for startingWith")
     void throwsExceptionOnEmptyStartsWith() {
+        DrugService service = new DrugService(this);
         Exception thrown = assertThrows(IllegalArgumentException.class,
-                () -> drugService.findDrugsStartingWith(""));
+                () -> service.findDrugsStartingWith(""));
         System.out.println(thrown.getMessage());
     }
 
     @Test
     @DisplayName("return dispensable drugs with all properties set correctly from database")
     void setsDrugPropertiesCorrectly() {
-        List<DispensableDrug> foundDrugs = drugService.findDrugsStartingWith("aspirin");
+        DrugService service = new DrugService(this);
+        List<DispensableDrug> foundDrugs = service.findDrugsStartingWith("aspirin");
         DrugClassification[] expectedClassifications = new DrugClassification[] {
                 DrugClassification.ANALGESIC, DrugClassification.PLATELET_AGGREGATION_INHIBITORS
         };
@@ -52,4 +58,16 @@ class DrugServiceTest {
         );
     }
 
+    @Override
+    public List<DrugRecord> findDrugsStartingWith(String startingString) {
+        List<DrugRecord> records = new ArrayList<>();
+        if (startingString.equals("as")) {
+            records.add(new DrugRecord("asmanex", new int[] {301}, 0));
+            records.add(new DrugRecord("aspirin", new int[] {3645, 3530}, 0));
+        }
+        else if (startingString.equals("aspirin")) {
+            records.add(new DrugRecord("aspirin", new int[] {3645, 3530}, 0));
+        }
+        return records;
+    }
 }
